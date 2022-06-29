@@ -226,15 +226,19 @@ pub fn VstPlugin(comptime info_arg: Info, comptime T: type) type {
         }
 
         fn setParameterCallback(effect: *api.AEffect, index: i32, parameter: f32) callconv(.C) void {
-            _ = effect;
-            _ = index;
-            _ = parameter;
+            const self = fromEffectPtr(effect) orelse return;
+            if (trait.hasFn("setParameter")(self.inner)) {
+                self.inner.setParameter(index, parameter);
+            }
         }
 
         fn getParameterCallback(effect: *api.AEffect, index: i32) callconv(.C) f32 {
-            _ = effect;
-            _ = index;
-            return 0;
+            const self = fromEffectPtr(effect) orelse return 0.0;
+            if (trait.hasFn("setParameter")(self.inner)) {
+                return self.inner.getParameter(index, parameter);
+            } else {
+                return 0.0;
+            }
         }
 
         fn processReplacingCallback(effect: *api.AEffect, inputs: [*][*]f32, outputs: [*][*]f32, sample_frames: i32) callconv(.C) void {
