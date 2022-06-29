@@ -6,7 +6,8 @@ A cross-platform audio plugin platform for Zig.
 
 Nectar is made up of a number of packages:
 
-- [`nectar/core`](/core/README.md) - Core utilities and tools used across most other packges
+- [`nectar/core`](/core/README.md) - Core utilities and tools used across most other packages
+- [`nectar/midi`](/midi/README.md) - Mostly *untested* MIDI Parser
 - [`nectar/vst2`](/vst2/README.md) - Bindings to the VST 2.4 SDK and some utilities
 - [`nectar/standalone`](/standalone/README.md) - Bindings to libsoundio for standalone applications
 
