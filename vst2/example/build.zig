@@ -11,16 +11,16 @@ pub fn build(b: *std.build.Builder) void {
 
     const core = std.build.Pkg{
         .name = "nectar:core",
-        .path = std.build.FileSource{ .path = "../core/src/main.zig" },
+        .source = std.build.FileSource{ .path = "../../core/src/main.zig" },
     };
     const vst2 = std.build.Pkg{
         .name = "nectar:vst2",
-        .path = std.build.FileSource{ .path = "../vst2/src/main.zig" },
+        .source = std.build.FileSource{ .path = "../src/main.zig" },
         .dependencies = &.{core},
     };
     const midi = std.build.Pkg{
         .name = "nectar:midi",
-        .path = std.build.FileSource{ .path = "../midi/src/main.zig" },
+        .source = std.build.FileSource{ .path = "../../midi/src/main.zig" },
         .dependencies = &.{core},
     };
 
