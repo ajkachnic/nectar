@@ -285,7 +285,7 @@ pub fn VstPlugin(comptime info_arg: Info, comptime T: type) type {
 /// byte for a null character. So if you pass a max_length of 64 a maximum of
 /// 63 bytes will be copied from the data.
 /// The indices from data.len until max_length will be filled with zeroes.
-fn setData(ptr: *anyopaque, data: []const u8, max_length: usize) void {
+pub fn setData(ptr: *anyopaque, data: []const u8, max_length: usize) void {
     const buf_ptr = @ptrCast([*]u8, ptr);
     const copy_len = std.math.min(max_length - 1, data.len);
 
