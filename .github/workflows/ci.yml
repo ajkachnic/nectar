@@ -1,0 +1,28 @@
+name: CI
+
+on: [ push ]
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+  
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Setup Zig
+      run: |
+          sudo apt install xz-utils
+          sudo sh -c 'wget -c https://ziglang.org/builds/zig-linux-x86_64-0.9.1.tar.xz -O - | tar -xJ --strip-components=1 -C /usr/local/bin'
+    - name: test
+      run: |
+          sudo apt install kcov
+          zig build -Dtest-coverage
+    - name: codecov
+      - uses: codecov/codecov-action@v3
+        with:
+          # token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
+          # files: ./coverage1.xml,./coverage2.xml # optional
+          # flags: unittests # optional
+          name: codecov # optional
+          fail_ci_if_error: true # optional (default = false)
+          verbose: true # optional (default = false)
