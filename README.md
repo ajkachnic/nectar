@@ -1,7 +1,5 @@
 # nectar
 
-[![MIDI Parser Coverage Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/ajkachnic/6ea115f49e2287c836280743aa4f88d9/raw/nectar__heads_main.json)]
-
 A cross-platform audio plugin platform for Zig.
 
 ***WARNING***: *This is in like a pre-alpha state, and probably very buggy and incomplete; Here be dragons*
