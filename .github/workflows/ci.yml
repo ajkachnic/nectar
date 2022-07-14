@@ -11,7 +11,7 @@ jobs:
       - name: Setup Zig
         run: |
             sudo apt install xz-utils
-            sudo sh -c 'wget -c https://ziglang.org/builds/zig-linux-x86_64-0.9.1.tar.xz -O - | tar -xJ --strip-components=1 -C /usr/local/bin'
+            sudo sh -c 'wget -c https://ziglang.org/download/0.9.1/zig-linux-x86_64-0.9.1.tar.xz -O - | tar -xJ --strip-components=1 -C /usr/local/bin'
       - name: test
         run: |
             sudo apt install kcov
