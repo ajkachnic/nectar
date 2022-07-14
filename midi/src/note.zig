@@ -192,6 +192,10 @@ pub const Note = enum(u7) {
     Gb9 = 126,
     G9 = 127,
 
+    pub const Error = error{
+        NoteOutOfRange,
+    };
+
     pub fn from(note: u7) Note {
         return @intToEnum(Note, note);
     }
@@ -211,6 +215,16 @@ pub const Note = enum(u7) {
         var exp = (@intToFloat(T, @enumToInt(self)) + 36.376_316_562_295_91) / 12.0;
 
         return std.math.pow(T, 2, exp);
+    }
+
+    pub fn step(self: Note, half_step: i8) Error!Note {
+        var raw_note = @intCast(i16, @enumToInt(self)) + @intCast(i16, half_step);
+
+        if (0 <= raw_note and raw_note <= 127) {
+            return Note.from_u8(@intCast(u8, raw_note));
+        } else {
+            return error.NoteOutOfRange;
+        }
     }
 
     pub fn to_str(self: Note) []const u8 {
@@ -346,3 +360,16 @@ pub const Note = enum(u7) {
         }
     }
 };
+
+test "Note.to_freq" {
+    try std.testing.expectApproxEqRel(Note.A4.to_freq(f64), 440.0, 0.01);
+    try std.testing.expectApproxEqRel(Note.A4.to_freq(f32), 440.0, 0.01);
+}
+
+test "Note.step" {
+    try std.testing.expectEqual(Note.CMinus1.step(12), Note.C0);
+    try std.testing.expectEqual(Note.C0.step(-12), Note.CMinus1);
+    try std.testing.expectEqual(Note.B3.step(1), Note.C4);
+    try std.testing.expectError(error.NoteOutOfRange, Note.B3.step(100));
+    try std.testing.expectError(error.NoteOutOfRange, Note.B3.step(-100));
+}

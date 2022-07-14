@@ -256,3 +256,236 @@ pub const Song = u7;
 
 /// 16 channels, indexed from 0 to 15
 const Channel = u4;
+
+// test "Force evaluation" {
+// }
+
+test "Message.parse" {
+    // no bytes produces an error
+    try std.testing.expectError(error.NoBytes, MidiMessage.parse(&.{}));
+
+    // no status byte produces an error
+    try std.testing.expectError(error.UnexpectedDataByte, MidiMessage.parse(&.{0x00}));
+}
+
+test "Message.parse: NoteOff" {
+    // NoteOff event produces errors with only 1 byte
+    try std.testing.expectError(error.NotEnoughBytes, MidiMessage.parse(&.{0x84}));
+
+    // NoteOff event produces errors with only 2 bytes
+    try std.testing.expectError(error.NotEnoughBytes, MidiMessage.parse(&.{ 0x84, 64 }));
+
+    // NoteOff event is decoded.
+    try std.testing.expectEqual(
+        MidiMessage.parse(&.{ 0x84, 64, 100 }),
+        .{ .NoteOff = .{
+            .channel = 4,
+            .note = Note.E4,
+            .velocity = 100,
+        } },
+    );
+}
+
+test "Message.parse: NoteOn" {
+    // NoteOn event produces errors with only 1 byte
+    try std.testing.expectError(error.NotEnoughBytes, MidiMessage.parse(&.{0x94}));
+
+    // NoteOn event produces errors with only 2 bytes
+    try std.testing.expectError(error.NotEnoughBytes, MidiMessage.parse(&.{ 0x94, 64 }));
+
+    // NoteOn event is decoded.
+    try std.testing.expectEqual(
+        MidiMessage.parse(&.{ 0x94, 64, 100 }),
+        .{ .NoteOn = .{
+            .channel = 4,
+            .note = Note.E4,
+            .velocity = 100,
+        } },
+    );
+
+    // NoteOn message with 0 velocity decodes as NoteOff
+    try std.testing.expectEqual(
+        MidiMessage.parse(&.{ 0x94, 64, 0 }),
+        .{ .NoteOff = .{
+            .channel = 4,
+            .note = Note.E4,
+            .velocity = 0,
+        } },
+    );
+}
+
+test "Message.parse: SysEx" {
+    // SysEx message is decoded with borrowed data
+    try std.testing.expectEqualSlices(
+        u8,
+        (try MidiMessage.parse(&.{ 0xF0, 4, 8, 12, 16, 0xF7 })).SysEx,
+        &.{ 4, 8, 12, 16 },
+    );
+
+    // SysEx message does not include bytes after the end byte
+    try std.testing.expectEqualSlices(
+        u8,
+        (try MidiMessage.parse(&.{ 0xF0, 3, 6, 9, 12, 15, 0xF7, 125 })).SysEx,
+        &.{ 3, 6, 9, 12, 15 },
+    );
+
+    // SysEx message without end status produces error
+    try std.testing.expectError(
+        error.NoSysExEndByte,
+        MidiMessage.parse(&.{ 0xF0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }),
+    );
+
+    // SysEx message with wrong end byte produces error
+    try std.testing.expectError(
+        error.UnexpectedNonSysExEndByte,
+        MidiMessage.parse(&.{ 0xF0, 1, 2, 3, 4, 5, 6, 7, 8, 0xF8 }),
+    );
+}
+
+test "Message.parse: PitchBend" {
+    // PitchBend with single byte produces error.
+    try std.testing.expectError(error.NotEnoughBytes, MidiMessage.parse(&.{0xE4}));
+    // PitchBend with only 2 bytes produces error.
+    try std.testing.expectError(error.NotEnoughBytes, MidiMessage.parse(&.{ 0xE4, 64 }));
+    // PitchBendChange is decoded.
+    try std.testing.expectEqual(
+        MidiMessage.parse(&.{ 0xE4, 64, 100 }),
+        .{ .PitchBendChange = .{
+            .channel = 4,
+            .pitch_bend = 12864,
+        } },
+    );
+}
+
+test "Message.parse: PolyphonicKeyPressure" {
+    // PolyphonicKeyPressure is decoded
+    try std.testing.expectEqual(
+        MidiMessage.parse(&.{ 0xA4, 64, 100 }),
+        .{ .PolyphonicKeyPressure = .{
+            .channel = 4,
+            .note = Note.E4,
+            .velocity = 100,
+        } },
+    );
+}
+
+test "Message.parse: ControlChange" {
+    // ControlChange is decoded
+    try std.testing.expectEqual(
+        MidiMessage.parse(&.{ 0xB4, 64, 100 }),
+        .{ .ControlChange = .{
+            .channel = 4,
+            .control_function = 64,
+            .control_value = 100,
+        } },
+    );
+}
+
+test "Message.parse: ProgramChange" {
+    // ProgramChange is decoded
+    try std.testing.expectEqual(
+        MidiMessage.parse(&.{ 0xC4, 64, 0 }),
+        .{ .ProgramChange = .{ .channel = 4, .program_number = 64 } },
+    );
+}
+
+test "Message.parse: ChannelPressure" {
+    // ChannelPressure is decoded
+    try std.testing.expectEqual(
+        MidiMessage.parse(&.{ 0xD4, 64, 0 }),
+        .{ .ChannelPressure = .{ .channel = 4, .velocity = 64 } },
+    );
+}
+
+test "Message.parse: ChannelPressure" {
+    // ChannelPressure is decoded
+    try std.testing.expectEqual(
+        MidiMessage.parse(&.{ 0xD4, 64, 0 }),
+        .{ .ChannelPressure = .{ .channel = 4, .velocity = 64 } },
+    );
+}
+
+test "Message.parse: misc decodes" {
+    // MidiTimeCode is decoded
+    try std.testing.expectEqual(
+        MidiMessage.parse(&.{ 0xF1, 8, 0 }),
+        .{ .MidiTimeCode = 8 },
+    );
+
+    // SongPositionPointer is decoded
+    try std.testing.expectEqual(
+        MidiMessage.parse(&.{ 0xF2, 14, 15 }),
+        .{ .SongPositionPointer = combine_data(14, 15) },
+    );
+
+    // SongPositionSelect is decoded
+    try std.testing.expectEqual(
+        MidiMessage.parse(&.{ 0xF3, 8, 0 }),
+        .{ .SongSelect = 8 },
+    );
+
+    // Reserved is decoded
+    try std.testing.expectEqual(
+        MidiMessage.parse(&.{ 0xF4, 0, 0 }),
+        .{ .Reserved = 0xF4 },
+    );
+
+    // TuneRequest is decoded
+    try std.testing.expectEqual(
+        MidiMessage.parse(&.{ 0xF6, 0, 0 }),
+        .{ .TuneRequest = {} },
+    );
+
+    try std.testing.expectError(
+        error.UnexpectedEndSysExByte,
+        MidiMessage.parse(&.{ 0xF7, 0, 0 }),
+    );
+
+    // TimingClock is decoded
+    try std.testing.expectEqual(
+        MidiMessage.parse(&.{ 0xF8, 0, 0 }),
+        .{ .TimingClock = {} },
+    );
+
+    // Reserved is decoded
+    try std.testing.expectEqual(
+        MidiMessage.parse(&.{ 0xF9, 0, 0 }),
+        .{ .Reserved = 0xF9 },
+    );
+
+    // Start is decoded
+    try std.testing.expectEqual(
+        MidiMessage.parse(&.{ 0xFA, 0, 0 }),
+        .{ .Start = {} },
+    );
+
+    // Continue is decoded
+    try std.testing.expectEqual(
+        MidiMessage.parse(&.{ 0xFB, 0, 0 }),
+        .{ .Continue = {} },
+    );
+
+    // Stop is decoded
+    try std.testing.expectEqual(
+        MidiMessage.parse(&.{ 0xFC, 0, 0 }),
+        .{ .Stop = {} },
+    );
+
+    // Reserved is decoded
+    try std.testing.expectEqual(
+        MidiMessage.parse(&.{ 0xFD, 0, 0 }),
+        .{ .Reserved = 0xFD },
+    );
+
+    // ActiveSensing is decoded
+    try std.testing.expectEqual(
+        MidiMessage.parse(&.{ 0xFE, 0, 0 }),
+        .{ .ActiveSensing = {} },
+    );
+
+    // Reset is decoded
+    try std.testing.expectEqual(
+        MidiMessage.parse(&.{ 0xFF, 0, 0 }),
+        .{ .Reset = {} },
+    );
+}
