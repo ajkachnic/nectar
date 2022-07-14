@@ -19,7 +19,10 @@ jobs:
       - name: Get coverage for badge
         run: |
             sudo apt install jq
-            COVERAGE=$(cat .coverage/midi/test*/coverage.json | jq ".percent_covered" -r)
+
+            TEST_NAME=$(basename $(readlink .coverage/midi/test))
+
+            COVERAGE=$(cat .coverage/midi/$TEST_NAME/coverage.json | jq ".percent_covered" -r)
 
             echo "COVERAGE=\"$COVERAGE%\"" >> $GITHUB_ENV
 
