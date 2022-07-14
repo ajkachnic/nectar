@@ -12,16 +12,33 @@ jobs:
         run: |
             sudo apt install xz-utils
             sudo sh -c 'wget -c https://ziglang.org/download/0.9.1/zig-linux-x86_64-0.9.1.tar.xz -O - | tar -xJ --strip-components=1 -C /usr/local/bin'
-      - name: test
+      - name: Run tests
         run: |
             sudo apt install kcov
             zig build -Dtest-coverage
-      - name: codecov
-        uses: codecov/codecov-action@v3
+      - name: Get coverage for badge
+        run: |
+            sudo apt install jq
+            COVERAGE=$(cat .coverage/midi/test*/coverage.json | jq ".percent_covered" -r)
+
+            echo "COVERAGE=\"$COVERAGE%\"" >> $GITHUB_ENV
+
+            REF=${{ github.ref }}
+
+            echo "github.ref: $REF"
+
+            IFS='/' read -ra PATHS <<< "$REF"
+            BRANCH_NAME="${PATHS[1]}_${PATHS[2]}"
+
+            echo "BRANCH=$(echo ${BRANCH_NAME})" >> $GITHUB_ENV
+        
+      - name: Create the Badge
+        uses: schneegans/dynamic-badges-action@v1.0.0
         with:
-            # token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
-            # files: ./coverage1.xml,./coverage2.xml # optional
-            # flags: unittests # optional
-            name: codecov # optional
-            fail_ci_if_error: true # optional (default = false)
-            verbose: true # optional (default = false)
+          auth: ${{ secrets.GIST_SECRET }}
+          gistID: 6ea115f49e2287c836280743aa4f88d9
+          filename: nectar__${{ env.BRANCH }}.json
+          label: MIDI Parser Test Coverage
+          message: ${{ env.COVERAGE }}
+          color: green
+          namedLogo: jest
