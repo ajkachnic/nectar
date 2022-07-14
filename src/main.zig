@@ -1,10 +1,8 @@
 const parameters = @import("./parameters.zig");
 const plugin = @import("./plugin.zig");
 
-pub const Parameters = parameters.Parameters;
-
-pub const Plugin = plugin.Plugin;
-pub const Info = plugin.Info;
+usingnamespace plugin;
+usingnamespace parameters;
 
 pub const core = @import("nectar:core");
 pub const midi = @import("nectar:midi");

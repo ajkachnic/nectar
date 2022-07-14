@@ -106,8 +106,14 @@ pub const Codes = struct {
         /// [ptr]: char buffer for current preset name, limited to `consts::MAX_PRESET_NAME_LEN`.
         GetCurrentPresetName = 5,
 
+        /// [index]: parameter
+        /// [ptr]: char buffer, limited to `consts.MAX_PARAM_STR_LEN` (e.g. "db", "ms", etc)
         GetParameterLabel = 6,
+        /// [index]: parameter
+        /// [ptr]: char buffer, limited to `consts.MAX_PARAM_STR_LEN` (e.g. "0.5", "ROOM", etc).
         GetParameterDisplay = 7,
+        /// [index]: parameter
+        /// [ptr]: char buffer, limited to `consts.MAX_PARAM_STR_LEN` (e.g. "Release", "Gain")
         GetParameterName = 8,
 
         /// Deprecated.

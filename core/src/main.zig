@@ -99,5 +99,13 @@ pub fn AudioBuffer(comptime layout: IOLayout, comptime T: type) type {
             const index = comptime getIndex(name);
             return self.raw[index][frame];
         }
+
+        pub inline fn setFrameByIndex(self: Self, index: usize, frame: usize, value: T) void {
+            self.raw[index][frame] = value;
+        }
+
+        pub inline fn getFrameByIndex(self: Self, index: usize, frame: usize) T {
+            return self.raw[index][frame];
+        }
     };
 }

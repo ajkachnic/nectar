@@ -64,15 +64,15 @@ pub const EmbedInfo = struct {
         return self.host_callback(&self.effect, opcode, index, value, ptr, opt);
     }
 
-    fn setCustomRef(self: *EmbedInfo, ptr: anytype) void {
+    pub fn setCustomRef(self: *EmbedInfo, ptr: anytype) void {
         self.custom_ref = @ptrCast(*anyopaque, ptr);
     }
 
-    fn clearCustomRef(self: *EmbedInfo) void {
+    pub fn clearCustomRef(self: *EmbedInfo) void {
         self.custom_ref = null;
     }
 
-    fn getCustomRef(self: *EmbedInfo, comptime T: type) ?*T {
+    pub fn getCustomRef(self: *EmbedInfo, comptime T: type) ?*T {
         if (self.custom_ref) |ptr| {
             return @ptrCast(*T, @alignCast(@alignOf(T), ptr));
         }

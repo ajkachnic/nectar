@@ -8,6 +8,10 @@ const midi = nectar.midi;
 const vst2 = nectar.vst2;
 const api = vst2.api;
 
+fn hasFeaure(haystack: []const nectar.Feature, needle: nectar.Feature) bool {
+    return std.mem.indexOf(nectar.Feature, haystack, &.{needle}) != null;
+}
+
 /// Generate a VST2 Wrapper around a given `nectar.Plugin`
 pub fn Wrap(comptime T: type) type {
     return struct {
@@ -20,7 +24,9 @@ pub fn Wrap(comptime T: type) type {
         inner: T,
         allocator: std.mem.Allocator,
 
-        pub fn generateExports() void {
+        /// TODO: Remove the dummy argument once https://github.com/ziglang/zig/issues/5380 gets fixed
+        pub fn generateExports(comptime dummy: void) void {
+            _ = dummy;
             comptime std.debug.assert(@TypeOf(VSTPluginMain) == api.PluginMain);
 
             @export(VSTPluginMain, .{
@@ -43,6 +49,12 @@ pub fn Wrap(comptime T: type) type {
         }
 
         fn initAEffect() api.AEffect {
+            var flags = [2]api.Plugin.Flag{ .CanReplacing, undefined };
+            var flagsSlice: []const api.Plugin.Flag = flags[0..1];
+            if (hasFeaure(info.features, .instrument)) {
+                flags[1] = .IsSynth;
+                flagsSlice = flags[0..2];
+            }
             return .{
                 .dispatcher = dispatcherCallback,
                 .setParameter = setParameterCallback,
@@ -50,10 +62,11 @@ pub fn Wrap(comptime T: type) type {
                 .processReplacing = processReplacingCallback,
                 .processReplacingF64 = processReplacingCallbackF64,
                 .num_programs = 0,
-                .num_params = T.ParametersType.len(),
+                .num_params = @intCast(i32, T.ParametersType.len()),
                 .num_inputs = info.input.len,
                 .num_outputs = info.output.len,
-                .flags = api.Plugin.Flag.toBitmask(info.flags),
+                .flags = api.Plugin.Flag.toBitmask(flagsSlice),
+                // .flags = 0,
                 .initial_delay = info.initial_delay,
                 .unique_id = info.unique_id,
                 .version = info.versionToInt(),
@@ -94,9 +107,9 @@ pub fn Wrap(comptime T: type) type {
         }
 
         fn deinit(self: *Self) void {
-            if (comptime trait.hasFn("deinit")(T)) {
-                T.deinit(&self.inner);
-            }
+            // if (comptime trait.hasFn("deinit")(T)) {
+            //     T.deinit(&self.inner);
+            // }
 
             self.allocator.destroy(self);
         }
@@ -120,15 +133,32 @@ pub fn Wrap(comptime T: type) type {
                 .Shutdown => self.deinit(),
                 .GetProductName => vst2.setData(ptr.?, info.name, api.ProductNameMaxLength),
                 .GetVendorName => vst2.setData(ptr.?, info.vendor, api.VendorNameMaxLength),
-                .GetCategory => return info.category.toInt(i32),
+                // .GetCategory => return info.category.toInt(i32),
+
+                .GetParameterLabel => {
+                    var params = self.inner.getParams();
+                    var label = params.getParameterLabel(self.allocator, index);
+
+                    if (label) |v| vst2.setData(ptr.?, v, api.ParamMaxLength);
+                },
+                .GetParameterDisplay => {
+                    var params = self.inner.getParams();
+                    var text = params.getParameterText(self.allocator, index);
+
+                    if (text) |v| vst2.setData(ptr.?, v, api.ParamMaxLength);
+                },
+                .GetParameterName => {
+                    var params = self.inner.getParams();
+                    var name = params.getParameterName(self.allocator, index);
+
+                    if (name) |v| vst2.setData(ptr.?, v, api.ParamMaxLength);
+                },
+
+                .GetCategory => return 0,
                 .GetApiVersion => return 2400,
                 .GetTailSize => return 0,
-                .SetSampleRate => {
-                    self.inner.setSampleRate(opt);
-                },
-                .SetBufferSize => {
-                    self.inner.setBufferSize(@intCast(i64, value));
-                },
+                .SetSampleRate => self.inner.setSampleRate(opt),
+                .SetBufferSize => self.inner.setBufferSize(@intCast(i64, value)),
                 .StateChange => {
                     if (value == 1) {
                         self.inner.@"resume"();
@@ -147,9 +177,9 @@ pub fn Wrap(comptime T: type) type {
                             var ev: ?nectar.Event = s: {
                                 switch (event) {
                                     .Midi => |m| break :s .{
-                                        .Midi = midi.MidiMessage.parse(&m.date),
+                                        .Midi = midi.MidiMessage.parse(&m.data) catch continue,
                                     },
-                                    else => break :s null,
+                                    // else => break :s null,
                                 }
                             };
                             if (ev) |e| list.append(e) catch {
@@ -163,9 +193,9 @@ pub fn Wrap(comptime T: type) type {
                     defer events.deinit();
                     // }
                 },
-                .GetInputInfo => {
-                    if (index >= 0 and index < self.info.inputs.len) {}
-                },
+                // .GetInputInfo => {
+                //     if (index >= 0 and index < info.inputs.len) {}
+                // },
                 .GetOutputInfo => {},
                 else => {},
             }
