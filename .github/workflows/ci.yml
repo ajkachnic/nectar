@@ -16,32 +16,32 @@ jobs:
         run: |
             sudo apt install kcov
             zig build -Dtest-coverage
-      - name: Get coverage for badge
-        run: |
-            sudo apt install jq
+      # - name: Get coverage for badge
+      #   run: |
+      #       sudo apt install jq
 
-            TEST_NAME=$(basename $(readlink .coverage/midi/test))
+      #       TEST_NAME=$(basename $(readlink .coverage/midi/test))
 
-            COVERAGE=$(cat .coverage/midi/$TEST_NAME/coverage.json | jq ".percent_covered" -r)
+      #       COVERAGE=$(cat .coverage/midi/$TEST_NAME/coverage.json | jq ".percent_covered" -r)
 
-            echo "COVERAGE=\"$COVERAGE%\"" >> $GITHUB_ENV
+      #       echo "COVERAGE=\"$COVERAGE%\"" >> $GITHUB_ENV
 
-            REF=${{ github.ref }}
+      #       REF=${{ github.ref }}
 
-            echo "github.ref: $REF"
+      #       echo "github.ref: $REF"
 
-            IFS='/' read -ra PATHS <<< "$REF"
-            BRANCH_NAME="${PATHS[1]}_${PATHS[2]}"
+      #       IFS='/' read -ra PATHS <<< "$REF"
+      #       BRANCH_NAME="${PATHS[1]}_${PATHS[2]}"
 
-            echo "BRANCH=$(echo ${BRANCH_NAME})" >> $GITHUB_ENV
+      #       echo "BRANCH=$(echo ${BRANCH_NAME})" >> $GITHUB_ENV
         
-      - name: Create the Badge
-        uses: schneegans/dynamic-badges-action@v1.0.0
-        with:
-          auth: ${{ secrets.GIST_SECRET }}
-          gistID: 6ea115f49e2287c836280743aa4f88d9
-          filename: nectar__${{ env.BRANCH }}.json
-          label: MIDI Parser Test Coverage
-          message: ${{ env.COVERAGE }}
-          color: green
-          namedLogo: jest
+      # - name: Create the Badge
+      #   uses: schneegans/dynamic-badges-action@v1.0.0
+      #   with:
+      #     auth: ${{ secrets.GIST_SECRET }}
+      #     gistID: 6ea115f49e2287c836280743aa4f88d9
+      #     filename: nectar__${{ env.BRANCH }}.json
+      #     label: MIDI Parser Test Coverage
+      #     message: ${{ env.COVERAGE }}
+      #     color: green
+      #     namedLogo: jest
