@@ -1,0 +1,86 @@
+/**
+ * Any CSS included here will be global. The classic template
+ * bundles Infima by default. Infima is a CSS framework designed to
+ * work well for content-centric websites.
+ */
+
+/* You can override the default Infima variables here. */
+:root {
+  /* --ifm-color-primary: #2e8555;
+  --ifm-color-primary-dark: #29784c;
+  --ifm-color-primary-darker: #277148;
+  --ifm-color-primary-darkest: #205d3b;
+  --ifm-color-primary-light: #33925d;
+  --ifm-color-primary-lighter: #359962;
+  --ifm-color-primary-lightest: #3cad6e; */
+  font-family: "Work Sans", sans-serif;
+  --ifm-code-font-size: 95%;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+
+  --ifm-color-gray-1000: #1c2c33;
+  --ifm-color-gray-900: #29414a;
+  --ifm-color-gray-800: #395560;
+  --ifm-color-gray-700: #4C6B77;
+  --ifm-color-gray-600: #64828E;
+  --ifm-color-gray-500:  #819AA4;
+  --ifm-color-gray-400:  #A0B3BB;
+  --ifm-color-gray-300:  #BFCCD2;
+  --ifm-color-gray-200:  #DAE4E8;
+  --ifm-color-gray-100:  #E6F0F4;
+  --ifm-color-gray-0:  #F2FBFF;
+  
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Work Sans", sans-serif;
+
+}
+/* For readability concerns, you should choose a lighter palette in dark mode. */
+/* [data-theme='dark'] {
+  --ifm-color-primary: #25c2a0;
+  --ifm-color-primary-dark: #21af90;
+  --ifm-color-primary-darker: #1fa588;
+  --ifm-color-primary-darkest: #1a8870;
+  --ifm-color-primary-light: #29d5b0;
+  --ifm-color-primary-lighter: #32d8b4;
+  --ifm-color-primary-lightest: #4fddbf;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+} */
+[data-theme='dark'] {
+  --ifm-color-primary: #f4a261;
+  --ifm-color-primary-dark: #f28f41;
+  --ifm-color-primary-darker: #f18631;
+  --ifm-color-primary-darkest: #df6b10;
+  --ifm-color-primary-light: #f6b581;
+  --ifm-color-primary-lighter: #f7be91;
+  --ifm-color-primary-lightest: #fbdac1;
+
+    --ifm-color-secondary: #e9c46a;
+    --ifm-color-secondary-dark: #e5b84c;
+    --ifm-color-secondary-darker: #e2b23e;
+    --ifm-color-secondary-darkest: #cf9b1f;
+    --ifm-color-secondary-light: #edd088;
+    --ifm-color-secondary-lighter: #f0d696;
+    --ifm-color-secondary-lightest: #f6e7c3;
+
+    --ifm-color-danger: #e76f51;
+    --ifm-color-danger-dark: #e35836;
+    --ifm-color-danger-darker: #e14d28;
+    --ifm-color-danger-darkest: #c03c1a;
+    --ifm-color-danger-light: #eb866c;
+    --ifm-color-danger-lighter: #ed917a;
+    --ifm-color-danger-lightest: #f2b3a3;
+
+    --ifm-background-color: #264653;
+}
+
+@font-face {
+  font-family: "Work Sans";
+  src: url('/static/fonts/Work_Sans/WorkSans-VariableFont_wght.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: "Arima Madurai";
+  src: url('/static/fonts/Arima_Madurai/ArimaMadurai-Black.ttf') format('truetype');
+  font-weight: 900;
+}

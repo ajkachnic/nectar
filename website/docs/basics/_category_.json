@@ -1,0 +1,8 @@
+{
+  "label": "The Basics",
+  "position": 3,
+  "link": {
+    "type": "generated-index",
+    "description": "A crash-course in the basics of Nectar, by writing an Amplifier plugin."
+  }
+}

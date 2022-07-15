@@ -1,0 +1,100 @@
+/**
+ * CSS files with the .module.css suffix will be treated as CSS modules
+ * and scoped locally.
+ */
+
+.heroBanner {
+  padding: 4rem 0;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+
+@media screen and (max-width: 996px) {
+  .heroBanner {
+    padding: 2rem;
+  }
+}
+.heroButton {
+  background: var(--ifm-color-gray-900);
+  color: var(--ifm-color-secondary);
+  font-weight: 600;
+  margin: 1.5rem 0;
+}
+
+.heroButton:hover {
+  color: var(--ifm-color-secondary-light);
+  background: var(--ifm-color-gray-800);
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.title {
+  font-family: "Arima Madurai";
+  font-size: 4rem;
+  margin: 1.75rem 0;
+}
+
+@media screen and (min-width: 800px) {
+  .title {
+    font-size: 6rem;
+  }
+}
+
+@media screen and (min-width: 1400px) {
+  .title {
+    font-size: 8rem;
+  }
+}
+
+.copyMain {
+  display: flex;
+  justify-content: center;
+
+  padding: 2rem 1rem;
+  background: #264653;
+}
+
+.copyInner {
+  max-width: 80ch;
+}
+
+.copyMain h2 {
+  color: var(--ifm-color-secondary);
+}
+
+@media screen and (min-width: 1400px) {
+  .copyMain {
+    padding: 3rem 1rem;
+  }
+}
+
+.copySection {
+  margin: 3rem 0;
+}
+
+.warningBanner {
+  background: var(--ifm-color-danger-darker);
+  color: var(--ifm-foreground-color);
+  padding: 0.75rem 0;
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  margin: none;
+  text-align: center;
+}
+
+.warningBanner p {
+  margin: 0;
+  padding: 0;
+}
+
+.warningBanner a {
+  color: var(--ifm-foreground-color);
+  font-weight: 900;
+}
