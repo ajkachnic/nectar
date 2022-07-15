@@ -6,14 +6,34 @@
 
 /* You can override the default Infima variables here. */
 :root {
-  /* --ifm-color-primary: #2e8555;
-  --ifm-color-primary-dark: #29784c;
-  --ifm-color-primary-darker: #277148;
-  --ifm-color-primary-darkest: #205d3b;
-  --ifm-color-primary-light: #33925d;
-  --ifm-color-primary-lighter: #359962;
-  --ifm-color-primary-lightest: #3cad6e; */
   font-family: "Work Sans", sans-serif;
+
+  --bg: #DAE4E8;
+
+  --ifm-color-primary: #228176;
+  --ifm-color-primary-dark: #1f746a;
+  --ifm-color-primary-darker: #1d6e64;
+  --ifm-color-primary-darkest: #185a53;
+  --ifm-color-primary-light: #258e82;
+  --ifm-color-primary-lighter: #279488;
+  --ifm-color-primary-lightest: #2ca899;
+
+  --ifm-color-secondary: #47829a;
+  --ifm-color-secondary-dark: #40758b;
+  --ifm-color-secondary-darker: #3c6f83;
+  --ifm-color-secondary-darkest: #325b6c;
+  --ifm-color-secondary-light: #4e8fa9;
+  --ifm-color-secondary-lighter: #5395b0;
+  --ifm-color-secondary-lightest: #6aa3ba;
+
+  --ifm-color-danger: #e76f51;
+  --ifm-color-danger-dark: #e35836;
+  --ifm-color-danger-darker: #e14d28;
+  --ifm-color-danger-darkest: #c03c1a;
+  --ifm-color-danger-light: #eb866c;
+  --ifm-color-danger-lighter: #ed917a;
+  --ifm-color-danger-lightest: #f2b3a3;
+
   --ifm-code-font-size: 95%;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
 
@@ -55,23 +75,25 @@ h1, h2, h3, h4, h5, h6 {
   --ifm-color-primary-lighter: #f7be91;
   --ifm-color-primary-lightest: #fbdac1;
 
-    --ifm-color-secondary: #e9c46a;
-    --ifm-color-secondary-dark: #e5b84c;
-    --ifm-color-secondary-darker: #e2b23e;
-    --ifm-color-secondary-darkest: #cf9b1f;
-    --ifm-color-secondary-light: #edd088;
-    --ifm-color-secondary-lighter: #f0d696;
-    --ifm-color-secondary-lightest: #f6e7c3;
+  --ifm-color-secondary: #e9c46a;
+  --ifm-color-secondary-dark: #e5b84c;
+  --ifm-color-secondary-darker: #e2b23e;
+  --ifm-color-secondary-darkest: #cf9b1f;
+  --ifm-color-secondary-light: #edd088;
+  --ifm-color-secondary-lighter: #f0d696;
+  --ifm-color-secondary-lightest: #f6e7c3;
 
-    --ifm-color-danger: #e76f51;
-    --ifm-color-danger-dark: #e35836;
-    --ifm-color-danger-darker: #e14d28;
-    --ifm-color-danger-darkest: #c03c1a;
-    --ifm-color-danger-light: #eb866c;
-    --ifm-color-danger-lighter: #ed917a;
-    --ifm-color-danger-lightest: #f2b3a3;
+  --ifm-color-danger: #e76f51;
+  --ifm-color-danger-dark: #e35836;
+  --ifm-color-danger-darker: #e14d28;
+  --ifm-color-danger-darkest: #c03c1a;
+  --ifm-color-danger-light: #eb866c;
+  --ifm-color-danger-lighter: #ed917a;
+  --ifm-color-danger-lightest: #f2b3a3;
 
-    --ifm-background-color: #264653;
+  --ifm-background-color: #264653;
+
+  --bg: #264653;
 }
 
 @font-face {
