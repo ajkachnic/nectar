@@ -1,5 +1,7 @@
 # nectar
 
+![A logo form of "nectar"](assets/logo.svg)
+
 A cross-platform audio plugin platform for Zig.
 
 ***WARNING***: *This is in like a pre-alpha state, and probably very buggy and incomplete; Here be dragons*
