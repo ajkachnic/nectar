@@ -1,6 +1,5 @@
-# nectar
-
 ![A logo form of "nectar"](assets/logo.svg)
+<!-- # nectar -->
 
 A cross-platform audio plugin platform for Zig.
 
