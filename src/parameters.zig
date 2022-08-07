@@ -25,47 +25,10 @@ pub const util = struct {
     }
 
     fn getFunction(comptime name: []const u8, FnT: type, ImplT: type) ?FnT {
-        // const our_cc = @typeInfo(FnT).Fn.calling_convention;
-
         // Find the candidate in the implementation type.
         for (std.meta.declarations(ImplT)) |decl| {
             if (std.mem.eql(u8, name, decl.name)) {
-                switch (decl.data) {
-                    .Fn => |fn_decl| {
-                        _ = fn_decl;
-                        // const args = @typeInfo(fn_decl.fn_type).Fn.args;
-                        return @field(ImplT, name);
-
-                        // if (args.len == 0) {
-                        //     return @field(ImplT, name);
-                        // }
-
-                        // if (args.len > 0) {
-                        //     const arg0_type = args[0].arg_type.?;
-                        //     // const is_method = arg0_type == ImplT or arg0_type == *ImplT or arg0_type == *const ImplT;
-
-                        //     const candidate_cc = @typeInfo(fn_decl.fn_type).Fn.calling_convention;
-                        //     switch (candidate_cc) {
-                        //         .Async, .Unspecified => {},
-                        //         else => return null,
-                        //     }
-
-                        //     const Return = @typeInfo(FnT).Fn.return_type orelse noreturn;
-                        //     const CurrSelfType = @typeInfo(FnT).Fn.args[0].arg_type.?;
-
-                        //     const call_type: GenCallType = switch (our_cc) {
-                        //         .Async => if (candidate_cc == .Async) .BothAsync else .AsyncCallsBlocking,
-                        //         .Unspecified => if (candidate_cc == .Unspecified) .BothBlocking else .BlockingCallsAsync,
-                        //         else => unreachable,
-                        //     };
-
-                        // if (!is_method) {
-                        // return @field(ImplT, name);
-                        // }
-                        // }
-                    },
-                    else => return null,
-                }
+                return @field(ImplT, name);
             }
         }
 
@@ -84,7 +47,8 @@ pub fn Parameters(comptime Params: type) type {
         // TODO: Support nested parameters
         updated_field.field_type = Atomic(field.field_type);
         if (field.default_value) |default| {
-            updated_field.default_value = Atomic(field.field_type).init(default);
+            var _default = @ptrCast(*const field.field_type, default).*;
+            updated_field.default_value = &Atomic(field.field_type).init(_default);
         }
         fields[i] = updated_field;
 
@@ -124,7 +88,6 @@ pub fn Parameters(comptime Params: type) type {
                 }
                 j += 1;
             }
-            // @field(self, info.fields[@intCast(usize, param)].name).store(value, .Unordered);
         }
 
         pub fn getParameter(self: *Self, param: i32) f32 {
@@ -136,7 +99,6 @@ pub fn Parameters(comptime Params: type) type {
                 j += 1;
             }
             return 0.0;
-            // return @field(self, info.fields[@intCast(usize, param)].name).load(.Unordered);
         }
 
         pub fn getParameterName(self: *Self, allocator: std.mem.Allocator, param: i32) ?[]const u8 {

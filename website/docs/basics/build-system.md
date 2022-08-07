@@ -23,11 +23,11 @@ pub fn build(b: *std.build.Builder) void {
 
     const nectar = std.build.Pkg{
         .name = "nectar",
-        .path = .{ .path = "libs/nectar/src/main.zig" },
+        .source = .{ .path = "libs/nectar/src/main.zig" },
         .dependencies = &.{
-            .{ .name = "nectar:core", .path = .{ .path = "libs/nectar/core/src/main.zig" } },
-            .{ .name = "nectar:midi", .path = .{ .path = "libs/nectar/midi/src/main.zig" } },
-            .{ .name = "nectar:vst2", .path = .{ .path = "libs/nectar/vst2/src/main.zig" } },
+            .{ .name = "nectar:core", .source = .{ .path = "libs/nectar/core/src/main.zig" } },
+            .{ .name = "nectar:midi", .source = .{ .path = "libs/nectar/midi/src/main.zig" } },
+            .{ .name = "nectar:vst2", .source = .{ .path = "libs/nectar/vst2/src/main.zig" } },
         },
     };
 
@@ -41,28 +41,12 @@ In a *coming-soon* version, adding this package will become significantly easier
 
 :::
 
-After adding the package, we want to iterate through all of our plugin targets. In Zig, we can use `std.meta.tags()` to get every tag value of an enum. Unfortunately, this function is not in the latest stable version of Zig. So, we have to copy over the definition (put it above the build function):
-
-```zig title="build.zig"
-// copied from latest zig std, not available in 0.9.1
-fn tags(comptime T: type) *const [std.meta.fields(T).len]T {
-    comptime {
-        const fieldInfos = std.meta.fields(T);
-        var res: [fieldInfos.len]T = undefined;
-        for (fieldInfos) |field, i| {
-            res[i] = @field(T, field.name);
-        }
-        return &res;
-    }
-}
-```
-
-But now, we can do the aforementioned iterating:
+After adding the package, we want to iterate through all of our plugin targets. In Zig, we can use `std.meta.tags()` to get every tag value of an enum. Using that function, we can setup up all of our targets:
 
 ```zig title="build.zig"
 pub fn build(b: *std.build.Builder) void {
     // snip (after defining nectar)
-    for (tags(PluginType)) |tag| {
+    for (std.meta.tags(PluginType)) |tag| {
         const lib = b.addSharedLibrary(
           "name-" ++ @tagName(tag),
           "main.zig",

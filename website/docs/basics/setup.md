@@ -8,7 +8,7 @@ In order to work with Nectar, you need to set some things up
 
 ## Dependencies
 
-First off, make sure you have the latest stable Zig release, in this case, **version 0.9.1**. You can install this using [Zig's Getting Started guide](https://ziglang.org/learn/getting-started/). You will also need [Git](https://git-scm.com/), and can install it using [this guide](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
+First off, make sure you have the latest nightly Zig release. You can install this using [Zig's Getting Started guide](https://ziglang.org/learn/getting-started/). You will also need [Git](https://git-scm.com/), and can install it using [this guide](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
 
 ## Creating a project
 
