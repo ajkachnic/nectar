@@ -7,7 +7,7 @@ pub const note = @import("note.zig");
 pub usingnamespace message;
 pub usingnamespace note;
 
-test "" {
+test {
     comptime std.testing.refAllDecls(@This());
 
     _ = message;
